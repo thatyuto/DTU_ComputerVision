@@ -1,0 +1,22 @@
+\subsection{Dual-stream with optical flow}
+The validation drop on the leakage-free split shows that appearance cues alone do not transfer to unseen subjects. We therefore add motion with a two-stream network. The spatial stream is a ResNet-18 late-fusion model on the 10 RGB frames. The temporal stream is a second ResNet-18 on the nine precomputed RAFT flow images in \texttt{flows\_png}, named \texttt{flow\_1\_2.png} through \texttt{flow\_9\_10.png} and read as 3-channel images. Both streams start from ImageNet weights and are fine-tuned end to end. The video score is the average of the two 10-class logit vectors.
+
+Training uses only \texttt{ucf101\_noleakage} (500/120/120). We optimize with AdamW for 20 epochs at a learning rate of $10^{-4}$, weight decay $10^{-4}$, batch size 4, and $112\times 112$ inputs normalized with ImageNet statistics. A random crop and a horizontal flip are shared by the RGB frames and the flow images of the same clip. The checkpoint with the best validation accuracy is kept, and the test split is evaluated once.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Dual-stream accuracy on the leakage-free split.}
+    \label{tab:dual}
+    \small
+    \begin{tabular}{lc}
+        \hline
+        Metric & Dual-stream \\
+        \hline
+        Best validation accuracy & 80.0\% \\
+        Selected epoch & 14 \\
+        Test accuracy & 77.5\% \\
+        \hline
+    \end{tabular}
+\end{table}
+
+On the same leakage-free split, this model reaches 80.0\% best validation accuracy, against 62.5\% for the RGB late-fusion model in Table~\ref{tab:leakage}, and 77.5\% on the held-out test set. The two runs are not identical: the RGB baseline trained a new classification layer for 10 epochs, while both streams here were fine-tuned for 20 epochs. The gain is therefore not due to optical flow alone. The flow stream still supplies the motion signal that a spatial model misses when familiar people and backgrounds are removed from the validation and test sets.

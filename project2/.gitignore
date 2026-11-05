@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+runs/
+OUTPUT_FILE*.out
+OUTPUT_FILE*.err
+*.pt
+.venv/
+data/

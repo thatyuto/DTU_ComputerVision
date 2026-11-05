@@ -1,0 +1,13 @@
+data/
+*.tar.gz
+*.zip
+*.avi
+*.mp4
+*.pth
+*.ckpt
+weights/
+checkpoints/
+outputs/
+runs/
+__pycache__/
+.ipynb_checkpoints/
